@@ -119,11 +119,6 @@ http://localhost:3000
 
 ---
 
-## Screenshots
-
-(Add your screenshots here)
-
----
 
 ## Future Improvements
 
