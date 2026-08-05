@@ -1,36 +1,44 @@
-import {API} from "./api";
-
-const APPOINTMENT_PATH = "/appointment";
+import { API } from "./api";
 
 export const getAppointments = async () => {
-  // awaiting response and returning the payload
-  const res = await API.get(`${APPOINTMENT_PATH}/list`);
-  return res.data;
-}
+    const response = await API.get("/appointment/list");
+    return response.data;
+};
 
-export const checkAppointmentAvailability = async (date) => {
-  // awaiting response and returning the payload
-  const res = await API.get(`${APPOINTMENT_PATH}/availability?schedule=${date}`);
-  return res.data;
-}
+export const getAppointmentById = async (id) => {
+    const response = await API.get(`/appointment/view/${id}`);
+    return response.data;
+};
 
-export const bookAppointment = async (schedule, clientId) => {
-  // parameter setup
-  const params = new URLSearchParams();
-  params.append('schedule', schedule);
-  params.append('clientId', clientId);
+export const checkAppointmentAvailability = async (schedule) => {
+    const response = await API.get("/appointment/availability", {
+        params: { schedule }
+    });
 
-  // awaiting response and returning the payload
-  const res = await API.post(`${APPOINTMENT_PATH}/book`, params);
-  return res.data;
-}
+    return response.data;
+};
+
+export const bookAppointment = async (
+    schedule,
+    clientId,
+    doctorId
+) => {
+
+    const response = await API.post("/appointment/book", null, {
+        params: {
+            schedule,
+            clientId,
+            doctorId
+        }
+    });
+
+    return response.data;
+};
 
 export const concludeAppointment = async (id, notes) => {
-  // parameter setup
-  const params = new URLSearchParams();
-  params.append('notes', notes);
+    const response = await API.patch(`/appointment/conclude/${id}`, null, {
+        params: { notes }
+    });
 
-  // awaiting response and returning the payload
-  const res = await API.patch(`${APPOINTMENT_PATH}/conclude/${id}`, params);
-  return res.data;
-}
+    return response.data;
+};
