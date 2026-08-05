@@ -1,21 +1,26 @@
 package mwcd.lhm.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@SequenceGenerator(name="APPOINTMENT_SEQ", sequenceName="appointment_sequence")
+@SequenceGenerator(name = "APPOINTMENT_SEQ", sequenceName = "appointment_sequence")
 public class Appointment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="APPOINTMENT_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "APPOINTMENT_SEQ")
     private Integer id;
 
     private Integer clientId;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
+
     private LocalDateTime schedule;
+
     private boolean occurred;
+
     private String notes;
 
     public Integer getId() {
@@ -32,6 +37,14 @@ public class Appointment {
 
     public void setClientId(Integer clientId) {
         this.clientId = clientId;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public LocalDateTime getSchedule() {

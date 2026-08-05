@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-
+import mwcd.lhm.backend.model.Doctor;
+import mwcd.lhm.backend.repository.DoctorRepository;
 @RestController
 @CrossOrigin
 @RequestMapping("/appointment")
@@ -16,6 +17,9 @@ public class AppointmentController {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
+    
+    @Autowired
+    private DoctorRepository doctorRepository;
 
     @GetMapping("/list")
     public Iterable<Appointment> getAppointments() {
@@ -46,23 +50,29 @@ public class AppointmentController {
     @PostMapping("/book")
     public boolean bookAppointment(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime schedule,
-            @RequestParam Integer clientId
+            @RequestParam Integer clientId,
+            @RequestParam Long doctorId
     ) {
-        // check availability
-        if (!checkAppointmentAvailability(schedule))
-            return Boolean.FALSE;
 
-        // create appointment object with parameter client id and generate default for rest
-        var appointment = new Appointment();
+        if (!checkAppointmentAvailability(schedule))
+            return false;
+
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+
+        if (doctor == null)
+            return false;
+
+        Appointment appointment = new Appointment();
+
         appointment.setClientId(clientId);
+        appointment.setDoctor(doctor);
         appointment.setSchedule(schedule.truncatedTo(ChronoUnit.HOURS));
-        appointment.setOccurred(Boolean.FALSE);
+        appointment.setOccurred(false);
         appointment.setNotes("");
 
-        // add appointment object to database
         appointmentRepository.save(appointment);
 
-        return Boolean.TRUE;
+        return true;
     }
 
     @PatchMapping("/conclude/{id}")
