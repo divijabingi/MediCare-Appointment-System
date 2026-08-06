@@ -25,19 +25,25 @@ const Login = (props) => {
   };
 
   const loginServerCall = async () => {
-    // get the client object from login API call
-    const client = await loginClient(email, password);
-    if (client.id == null)
-      window.alert("User does not exist.")
-    else {
-      // set the browser storage key of "client" to be client object
-      localStorage.setItem('client', JSON.stringify(client));
-      // navigate to home page
-      navigate('/');
-      // reload page to reflect on updated browser storage
-      window.location.reload();
-    }
+
+  const response = await loginClient(email, password);
+
+  if (!response.success) {
+
+    window.alert(response.message);
+
+  } else {
+
+    localStorage.setItem("client", JSON.stringify(response.client));
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("role", response.role);
+
+    navigate("/");
+
+    window.location.reload();
   }
+
+}
 
   return (
     <Form>

@@ -1,15 +1,40 @@
-import {API} from "./api";
+import { API } from "./api";
 
 const CLIENT_PROFILE_PATH = "/client/profile";
 
-export const updateClientById = async (id, name, password, record) => {
-  // parameter setup
-  const params = new URLSearchParams();
-  if (name != null) params.append('name', name);
-  if (password != null) params.append('password', password);
-  if (record != null) params.append('record', record);
+export const updateClientById = async (
+    id,
+    name,
+    phone,
+    age,
+    gender,
+    bloodGroup,
+    address,
+    emergencyContact
+) => {
 
-  // awaiting response and returning the payload
-  const res = await API.patch(`${CLIENT_PROFILE_PATH}/update/${id}`, params);
-  return res.data;
-}
+    const params = new URLSearchParams();
+
+    if (name) params.append("name", name);
+
+    if (phone) params.append("phone", phone);
+
+    if (age) params.append("age", age);
+
+    if (gender) params.append("gender", gender);
+
+    if (bloodGroup) params.append("bloodGroup", bloodGroup);
+
+    if (address) params.append("address", address);
+
+    if (emergencyContact)
+        params.append("emergencyContact", emergencyContact);
+
+    const response = await API.patch(
+        `${CLIENT_PROFILE_PATH}/update/${id}`,
+        params
+    );
+
+    return response.data;
+
+};

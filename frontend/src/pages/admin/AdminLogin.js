@@ -16,15 +16,17 @@ const AdminLogin = () => {
 
         const response = await adminLogin(username, password);
 
-        if (response.success) {
+       if (response.success) {
 
-            localStorage.setItem("admin", "true");
+    localStorage.setItem("admin", "true");
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("role", response.role);
 
-            alert("Admin Login Successful");
+    alert("Admin Login Successful");
 
-            navigate("/admin/doctors");
+    navigate("/admin/doctors");
 
-        } else {
+}else {
 
             alert(response.message);
 

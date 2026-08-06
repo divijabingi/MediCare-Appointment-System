@@ -22,6 +22,7 @@ import ViewClient from "./pages/profile/ViewClient";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDoctors from "./pages/admin/AdminDoctors";
 import AdminAppointments from "./pages/admin/AdminAppointments";
+import ClientProtected from "./components/ClientProtected";
 
 const App = () => {
 
@@ -54,14 +55,31 @@ const App = () => {
             {/* Appointment */}
 
             <Route
-              path="/book_appointment"
-              element={<BookAppointment />}
-            />
+  path="/book_appointment"
+  element={
+    <ClientProtected>
+      <BookAppointment />
+    </ClientProtected>
+  }
+/>
 
-            <Route
-              path="/my_appointments"
-              element={<MyAppointments />}
-            />
+<Route
+  path="/my_appointments"
+  element={
+    <ClientProtected>
+      <MyAppointments />
+    </ClientProtected>
+  }
+/>
+
+<Route
+  path="/view_client"
+  element={
+    <ClientProtected>
+      <ViewClient />
+    </ClientProtected>
+  }
+/>
 
             {/* Authentication */}
 
@@ -75,12 +93,7 @@ const App = () => {
               element={<Register />}
             />
 
-            {/* Profile */}
-
-            <Route
-              path="/view_client"
-              element={<ViewClient />}
-            />
+            
 
             {/* Admin */}
 
@@ -110,6 +123,7 @@ const App = () => {
               path="/hello"
               element={<h1>HELLO</h1>}
             />
+            
 
           </Routes>
 
