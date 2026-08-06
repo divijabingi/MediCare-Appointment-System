@@ -3,6 +3,7 @@ package mwcd.lhm.backend.controller;
 import mwcd.lhm.backend.model.Doctor;
 import mwcd.lhm.backend.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,32 +17,46 @@ public class DoctorController {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    // Add Doctor
+    // Admin Only - Add Doctor
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Doctor addDoctor(@RequestBody Doctor doctor) {
+
         return doctorRepository.save(doctor);
+
     }
 
-    // Get All Doctors
+    // Admin & Client - View All Doctors
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_CLIENT')")
     public List<Doctor> getAllDoctors() {
+
         return doctorRepository.findAll();
+
     }
 
-    // Get Doctor By Id
+    // Admin & Client - View Doctor By Id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_CLIENT')")
     public Optional<Doctor> getDoctorById(@PathVariable Long id) {
+
         return doctorRepository.findById(id);
+
     }
 
-    // Update Doctor
+    // Admin Only - Update Doctor
     @PutMapping("/{id}")
-    public Doctor updateDoctor(@PathVariable Long id,
-                               @RequestBody Doctor updatedDoctor) {
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Doctor updateDoctor(
+            @PathVariable Long id,
+            @RequestBody Doctor updatedDoctor
+    ) {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow();
 
         doctor.setName(updatedDoctor.getName());
+        doctor.setEmail(updatedDoctor.getEmail());
+        doctor.setPassword(updatedDoctor.getPassword());
         doctor.setQualification(updatedDoctor.getQualification());
         doctor.setSpecialization(updatedDoctor.getSpecialization());
         doctor.setExperience(updatedDoctor.getExperience());
@@ -49,14 +64,18 @@ public class DoctorController {
         doctor.setAvailability(updatedDoctor.getAvailability());
 
         return doctorRepository.save(doctor);
+
     }
 
-    // Delete Doctor
+    // Admin Only - Delete Doctor
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String deleteDoctor(@PathVariable Long id) {
 
         doctorRepository.deleteById(id);
 
         return "Doctor deleted successfully";
+
     }
+
 }

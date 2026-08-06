@@ -3,6 +3,7 @@ package mwcd.lhm.backend.controller;
 import mwcd.lhm.backend.model.MedicalRecord;
 import mwcd.lhm.backend.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,9 @@ public class MedicalRecordController {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
-    // Add Medical Record
+    // Admin Only - Add Medical Record
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public MedicalRecord addMedicalRecord(
             @RequestBody MedicalRecord medicalRecord
     ) {
@@ -23,8 +25,9 @@ public class MedicalRecordController {
 
     }
 
-    // View Medical Record by Appointment
+    // Admin & Client - View Medical Record by Appointment
     @GetMapping("/appointment/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_CLIENT')")
     public MedicalRecord getMedicalRecordByAppointment(
             @PathVariable Integer appointmentId
     ) {
@@ -32,7 +35,10 @@ public class MedicalRecordController {
         return medicalRecordRepository.findByAppointmentId(appointmentId);
 
     }
+
+    // Admin Only - Check if Medical Record Exists
     @GetMapping("/exists/{appointmentId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public boolean medicalRecordExists(
             @PathVariable Integer appointmentId
     ) {
@@ -41,8 +47,9 @@ public class MedicalRecordController {
 
     }
 
-    // View all Medical Records of a Patient
+    // Admin & Client - View Patient Medical Records
     @GetMapping("/client/{clientId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_CLIENT')")
     public Iterable<MedicalRecord> getMedicalRecordsByClient(
             @PathVariable Integer clientId
     ) {
@@ -51,8 +58,9 @@ public class MedicalRecordController {
 
     }
 
-    // Update Medical Record
+    // Admin Only - Update Medical Record
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public MedicalRecord updateMedicalRecord(
             @PathVariable Long id,
             @RequestBody MedicalRecord updatedRecord
