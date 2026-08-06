@@ -1,5 +1,5 @@
 package mwcd.lhm.backend.model;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +12,7 @@ public class Client {
 
     private String name;
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String record;
 
